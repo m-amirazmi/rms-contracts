@@ -19,7 +19,12 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("gen
         // Add a default export to index.ts for the desired usage
         val indexFile = file("${outputDir.get()}/index.ts")
         val indexContent = indexFile.readText()
-        val newContent = indexContent + "\nexport { DefaultApi as ApiContracts } from './api';\nexport default DefaultApi;\n"
+        val newContent = """
+            $indexContent
+            import { DefaultApi } from './api';
+            export { DefaultApi as ApiContracts } from './api';
+            export default DefaultApi;
+        """.trimIndent()
         indexFile.writeText(newContent)
     }
 }
