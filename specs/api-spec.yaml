@@ -1,33 +1,54 @@
 openapi: 3.1.0
 info:
   description: |
-    This is API Specification for Repair Management System to handle the repair flow of electronics repair shop.
+    API specification for the Repair Management System (RMS).
+    This is an aggregator document — each path is referenced from a per-domain
+    spec under `./*-spec.yaml`. The Java generator consumes the per-domain
+    specs directly; the TypeScript generator consumes this aggregator so the
+    resulting client exposes every group via a single `RMSApiClient`.
   version: 0.0.1
   title: Repair Management System | RMS
-  # termsOfService: 'http://rms.merazmi.com/terms/'
-  # contact:
-  #   email: apiteam@swagger.io
-  # license:
-  #   name: Apache 2.0
-  #   url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
 servers:
   - url: 'https://rms-devapi.merazmi.com/api/v1'
-    description: "Version 1"
+    description: Version 1
+tags:
+  - name: Repair
+  - name: Tenant
+  - name: CatalogCategory
+  - name: CatalogBrand
+  - name: CatalogModel
+  - name: Part
+  - name: Issue
 paths:
   /repairs:
-    get:
-      summary: List all repair requests
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                    name:
-                      type: string
+    $ref: './repair-spec.yaml#/paths/~1repairs'
+  /repairs/{id}:
+    $ref: './repair-spec.yaml#/components/pathItems/repairById'
+
+  /tenants:
+    $ref: './tenant-spec.yaml#/paths/~1tenants'
+  /tenants/{id}:
+    $ref: './tenant-spec.yaml#/paths/~1tenants~1%7Bid%7D'
+
+  /catalog/categories:
+    $ref: './catalog-spec.yaml#/paths/~1catalog~1categories'
+  /catalog/categories/{id}:
+    $ref: './catalog-spec.yaml#/paths/~1catalog~1categories~1%7Bid%7D'
+  /catalog/brands:
+    $ref: './catalog-spec.yaml#/paths/~1catalog~1brands'
+  /catalog/brands/{id}:
+    $ref: './catalog-spec.yaml#/paths/~1catalog~1brands~1%7Bid%7D'
+  /catalog/models:
+    $ref: './catalog-spec.yaml#/paths/~1catalog~1models'
+  /catalog/models/{id}:
+    $ref: './catalog-spec.yaml#/paths/~1catalog~1models~1%7Bid%7D'
+
+  /parts:
+    $ref: './part-spec.yaml#/paths/~1parts'
+  /parts/{id}:
+    $ref: './part-spec.yaml#/paths/~1parts~1%7Bid%7D'
+
+  /issues:
+    $ref: './issue-spec.yaml#/paths/~1issues'
+  /issues/{id}:
+    $ref: './issue-spec.yaml#/paths/~1issues~1%7Bid%7D'

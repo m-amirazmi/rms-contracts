@@ -5,11 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="034b68f3-6433-4549-bfba-4d7548bc64dd" name="Changes" comment="Initial setup of OpenAPI specifications, contract generation scripts, and CI/CD pipelines for RMS project.">
-      <change afterPath="$PROJECT_DIR$/.idea/dictionaries/project.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.github/workflows/publish.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/publish.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ARCHITECTURE.md" beforeDir="false" afterPath="$PROJECT_DIR$/ARCHITECTURE.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gradle.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules/java-server/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/modules/java-server/build.gradle.kts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules/typescript-client/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/modules/typescript-client/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/specs/api-spec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/specs/api-spec.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,7 +18,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="36" />
+    <option name="cachedIndexableFilesCount" value="38" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="ExternalProjectsData">
@@ -142,7 +143,7 @@
       <workItem from="1778527794204" duration="3307000" />
       <workItem from="1778602484843" duration="1459000" />
       <workItem from="1778925852448" duration="8654000" />
-      <workItem from="1778943208729" duration="1846000" />
+      <workItem from="1778943208729" duration="6270000" />
     </task>
     <task id="LOCAL-00001" summary="Initial setup of OpenAPI specifications, contract generation scripts, and CI/CD pipelines for RMS project.">
       <option name="closed" value="true" />

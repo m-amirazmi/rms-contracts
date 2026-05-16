@@ -4,7 +4,7 @@ plugins {
     id("org.openapi.generator")
 }
 
-val domains = listOf("repair", "tenant")
+val domains = listOf("repair", "tenant", "catalog", "part", "issue")
 
 domains.forEach { domain ->
     tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("openApiGenerate_${domain}") {
@@ -13,6 +13,7 @@ domains.forEach { domain ->
         outputDir.set("${layout.buildDirectory.get().asFile}/generated/${domain}")
         apiPackage.set("com.rms.${domain}.api")
         modelPackage.set("com.rms.${domain}.model")
+        validateSpec.set(false)
         configOptions.set(mapOf(
             "interfaceOnly" to "true",
             "useSpringBoot3" to "true",

@@ -1,0 +1,168 @@
+openapi: 3.1.0
+info:
+  title: RMS Part API
+  description: Spare part inventory linked to catalog category/brand/model.
+  version: 0.0.1
+servers:
+  - url: 'https://rms-devapi.merazmi.com/api/v1'
+    description: Version 1
+tags:
+  - name: Part
+paths:
+  /parts:
+    get:
+      tags: [Part]
+      operationId: list
+      summary: List parts (optionally filtered by catalog scope)
+      parameters:
+        - $ref: './shared-spec.yaml#/components/parameters/PageParam'
+        - $ref: './shared-spec.yaml#/components/parameters/SizeParam'
+        - $ref: './shared-spec.yaml#/components/parameters/SortParam'
+        - name: categoryId
+          in: query
+          required: false
+          schema:
+            $ref: './shared-spec.yaml#/components/schemas/Id'
+        - name: brandId
+          in: query
+          required: false
+          schema:
+            $ref: './shared-spec.yaml#/components/schemas/Id'
+        - name: modelId
+          in: query
+          required: false
+          schema:
+            $ref: './shared-spec.yaml#/components/schemas/Id'
+        - name: q
+          in: query
+          required: false
+          description: Free-text search on name or SKU.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartPage'
+    post:
+      tags: [Part]
+      operationId: create
+      summary: Create a part
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PartCreateRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Part'
+        '400':
+          $ref: './shared-spec.yaml#/components/responses/BadRequest'
+        '409':
+          $ref: './shared-spec.yaml#/components/responses/Conflict'
+  /parts/{id}:
+    parameters:
+      - $ref: './shared-spec.yaml#/components/parameters/IdPathParam'
+    get:
+      tags: [Part]
+      operationId: get
+      summary: Get a part by id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Part'
+        '404':
+          $ref: './shared-spec.yaml#/components/responses/NotFound'
+    patch:
+      tags: [Part]
+      operationId: update
+      summary: Update a part
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PartUpdateRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Part'
+        '400':
+          $ref: './shared-spec.yaml#/components/responses/BadRequest'
+        '404':
+          $ref: './shared-spec.yaml#/components/responses/NotFound'
+    delete:
+      tags: [Part]
+      operationId: delete
+      summary: Delete a part
+      responses:
+        '204':
+          description: No Content
+        '404':
+          $ref: './shared-spec.yaml#/components/responses/NotFound'
+components:
+  schemas:
+    PartBase:
+      type: object
+      properties:
+        name:
+          type: string
+        sku:
+          type: string
+          description: Stock-keeping unit; unique within tenant.
+        categoryId:
+          $ref: './shared-spec.yaml#/components/schemas/Id'
+        brandId:
+          $ref: './shared-spec.yaml#/components/schemas/Id'
+        modelId:
+          description: Specific model this part fits. Null = applies across all models in the brand/category.
+          oneOf:
+            - $ref: './shared-spec.yaml#/components/schemas/Id'
+            - type: 'null'
+        price:
+          type: number
+          format: double
+          minimum: 0
+        stockQuantity:
+          type: integer
+          minimum: 0
+    Part:
+      allOf:
+        - type: object
+          properties:
+            id:
+              $ref: './shared-spec.yaml#/components/schemas/Id'
+        - $ref: '#/components/schemas/PartBase'
+        - $ref: './shared-spec.yaml#/components/schemas/Timestamps'
+    PartCreateRequest:
+      allOf:
+        - $ref: '#/components/schemas/PartBase'
+        - type: object
+          required:
+            - name
+            - sku
+            - price
+    PartUpdateRequest:
+      $ref: '#/components/schemas/PartBase'
+    PartPage:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Part'
+        page:
+          $ref: './shared-spec.yaml#/components/schemas/PageMeta'

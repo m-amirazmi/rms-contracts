@@ -1,0 +1,156 @@
+openapi: 3.1.0
+info:
+  title: RMS Repair API
+  description: Repair request lifecycle endpoints.
+  version: 0.0.1
+servers:
+  - url: 'https://rms-devapi.merazmi.com/api/v1'
+    description: Version 1
+tags:
+  - name: Repair
+paths:
+  /repairs:
+    get:
+      tags: [Repair]
+      operationId: list
+      summary: List repair requests
+      parameters:
+        - $ref: './shared-spec.yaml#/components/parameters/PageParam'
+        - $ref: './shared-spec.yaml#/components/parameters/SizeParam'
+        - $ref: './shared-spec.yaml#/components/parameters/SortParam'
+        - name: status
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/RepairStatus'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RepairPage'
+    post:
+      tags: [Repair]
+      operationId: create
+      summary: Create a repair request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RepairCreateRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Repair'
+        '400':
+          $ref: './shared-spec.yaml#/components/responses/BadRequest'
+  /repairs/{id}:
+    $ref: '#/components/pathItems/repairById'
+components:
+  pathItems:
+    repairById:
+      parameters:
+        - $ref: './shared-spec.yaml#/components/parameters/IdPathParam'
+      get:
+        tags: [Repair]
+        operationId: get
+        summary: Get a repair request by id
+        responses:
+          '200':
+            description: OK
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Repair'
+          '404':
+            $ref: './shared-spec.yaml#/components/responses/NotFound'
+      patch:
+        tags: [Repair]
+        operationId: update
+        summary: Update a repair request
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RepairUpdateRequest'
+        responses:
+          '200':
+            description: OK
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Repair'
+          '400':
+            $ref: './shared-spec.yaml#/components/responses/BadRequest'
+          '404':
+            $ref: './shared-spec.yaml#/components/responses/NotFound'
+      delete:
+        tags: [Repair]
+        operationId: delete
+        summary: Delete a repair request
+        responses:
+          '204':
+            description: No Content
+          '404':
+            $ref: './shared-spec.yaml#/components/responses/NotFound'
+  schemas:
+    RepairStatus:
+      type: string
+      enum:
+        - PENDING
+        - IN_PROGRESS
+        - DONE
+        - CANCELLED
+    RepairBase:
+      type: object
+      properties:
+        customerName:
+          type: string
+        customerPhone:
+          type: string
+        deviceModelId:
+          $ref: './shared-spec.yaml#/components/schemas/Id'
+        issueIds:
+          type: array
+          items:
+            $ref: './shared-spec.yaml#/components/schemas/Id'
+        partIds:
+          type: array
+          items:
+            $ref: './shared-spec.yaml#/components/schemas/Id'
+        notes:
+          type: string
+        status:
+          $ref: '#/components/schemas/RepairStatus'
+    Repair:
+      allOf:
+        - type: object
+          properties:
+            id:
+              $ref: './shared-spec.yaml#/components/schemas/Id'
+        - $ref: '#/components/schemas/RepairBase'
+        - $ref: './shared-spec.yaml#/components/schemas/Timestamps'
+    RepairCreateRequest:
+      allOf:
+        - $ref: '#/components/schemas/RepairBase'
+        - type: object
+          required:
+            - customerName
+            - deviceModelId
+    RepairUpdateRequest:
+      $ref: '#/components/schemas/RepairBase'
+    RepairPage:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Repair'
+        page:
+          $ref: './shared-spec.yaml#/components/schemas/PageMeta'

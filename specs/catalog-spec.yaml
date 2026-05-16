@@ -1,0 +1,389 @@
+openapi: 3.1.0
+info:
+  title: RMS Catalog API
+  description: Device catalog — categories, brands, and models.
+  version: 0.0.1
+servers:
+  - url: 'https://rms-devapi.merazmi.com/api/v1'
+    description: Version 1
+tags:
+  - name: CatalogCategory
+  - name: CatalogBrand
+  - name: CatalogModel
+paths:
+  /catalog/categories:
+    get:
+      tags: [CatalogCategory]
+      operationId: list
+      summary: List categories
+      parameters:
+        - $ref: './shared-spec.yaml#/components/parameters/PageParam'
+        - $ref: './shared-spec.yaml#/components/parameters/SizeParam'
+        - $ref: './shared-spec.yaml#/components/parameters/SortParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryPage'
+    post:
+      tags: [CatalogCategory]
+      operationId: create
+      summary: Create a category
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryCreateRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        '400':
+          $ref: './shared-spec.yaml#/components/responses/BadRequest'
+        '409':
+          $ref: './shared-spec.yaml#/components/responses/Conflict'
+  /catalog/categories/{id}:
+    parameters:
+      - $ref: './shared-spec.yaml#/components/parameters/IdPathParam'
+    get:
+      tags: [CatalogCategory]
+      operationId: get
+      summary: Get a category by id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        '404':
+          $ref: './shared-spec.yaml#/components/responses/NotFound'
+    patch:
+      tags: [CatalogCategory]
+      operationId: update
+      summary: Update a category
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryUpdateRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        '400':
+          $ref: './shared-spec.yaml#/components/responses/BadRequest'
+        '404':
+          $ref: './shared-spec.yaml#/components/responses/NotFound'
+    delete:
+      tags: [CatalogCategory]
+      operationId: delete
+      summary: Delete a category
+      responses:
+        '204':
+          description: No Content
+        '404':
+          $ref: './shared-spec.yaml#/components/responses/NotFound'
+
+  /catalog/brands:
+    get:
+      tags: [CatalogBrand]
+      operationId: list
+      summary: List brands
+      parameters:
+        - $ref: './shared-spec.yaml#/components/parameters/PageParam'
+        - $ref: './shared-spec.yaml#/components/parameters/SizeParam'
+        - $ref: './shared-spec.yaml#/components/parameters/SortParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BrandPage'
+    post:
+      tags: [CatalogBrand]
+      operationId: create
+      summary: Create a brand
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BrandCreateRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Brand'
+        '400':
+          $ref: './shared-spec.yaml#/components/responses/BadRequest'
+        '409':
+          $ref: './shared-spec.yaml#/components/responses/Conflict'
+  /catalog/brands/{id}:
+    parameters:
+      - $ref: './shared-spec.yaml#/components/parameters/IdPathParam'
+    get:
+      tags: [CatalogBrand]
+      operationId: get
+      summary: Get a brand by id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Brand'
+        '404':
+          $ref: './shared-spec.yaml#/components/responses/NotFound'
+    patch:
+      tags: [CatalogBrand]
+      operationId: update
+      summary: Update a brand
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BrandUpdateRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Brand'
+        '400':
+          $ref: './shared-spec.yaml#/components/responses/BadRequest'
+        '404':
+          $ref: './shared-spec.yaml#/components/responses/NotFound'
+    delete:
+      tags: [CatalogBrand]
+      operationId: delete
+      summary: Delete a brand
+      responses:
+        '204':
+          description: No Content
+        '404':
+          $ref: './shared-spec.yaml#/components/responses/NotFound'
+
+  /catalog/models:
+    get:
+      tags: [CatalogModel]
+      operationId: list
+      summary: List device models
+      parameters:
+        - $ref: './shared-spec.yaml#/components/parameters/PageParam'
+        - $ref: './shared-spec.yaml#/components/parameters/SizeParam'
+        - $ref: './shared-spec.yaml#/components/parameters/SortParam'
+        - name: brandId
+          in: query
+          required: false
+          schema:
+            $ref: './shared-spec.yaml#/components/schemas/Id'
+        - name: categoryId
+          in: query
+          required: false
+          schema:
+            $ref: './shared-spec.yaml#/components/schemas/Id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModelPage'
+    post:
+      tags: [CatalogModel]
+      operationId: create
+      summary: Create a device model
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModelCreateRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Model'
+        '400':
+          $ref: './shared-spec.yaml#/components/responses/BadRequest'
+  /catalog/models/{id}:
+    parameters:
+      - $ref: './shared-spec.yaml#/components/parameters/IdPathParam'
+    get:
+      tags: [CatalogModel]
+      operationId: get
+      summary: Get a device model by id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Model'
+        '404':
+          $ref: './shared-spec.yaml#/components/responses/NotFound'
+    patch:
+      tags: [CatalogModel]
+      operationId: update
+      summary: Update a device model
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModelUpdateRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Model'
+        '400':
+          $ref: './shared-spec.yaml#/components/responses/BadRequest'
+        '404':
+          $ref: './shared-spec.yaml#/components/responses/NotFound'
+    delete:
+      tags: [CatalogModel]
+      operationId: delete
+      summary: Delete a device model
+      responses:
+        '204':
+          description: No Content
+        '404':
+          $ref: './shared-spec.yaml#/components/responses/NotFound'
+components:
+  schemas:
+    CategoryBase:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Human-readable name, e.g. "Smartphone", "Tablet".
+        slug:
+          type: string
+          pattern: '^[a-z0-9-]+$'
+        description:
+          type: string
+    Category:
+      allOf:
+        - type: object
+          properties:
+            id:
+              $ref: './shared-spec.yaml#/components/schemas/Id'
+        - $ref: '#/components/schemas/CategoryBase'
+        - $ref: './shared-spec.yaml#/components/schemas/Timestamps'
+    CategoryCreateRequest:
+      allOf:
+        - $ref: '#/components/schemas/CategoryBase'
+        - type: object
+          required:
+            - name
+            - slug
+    CategoryUpdateRequest:
+      $ref: '#/components/schemas/CategoryBase'
+    CategoryPage:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Category'
+        page:
+          $ref: './shared-spec.yaml#/components/schemas/PageMeta'
+
+    BrandBase:
+      type: object
+      properties:
+        name:
+          type: string
+        slug:
+          type: string
+          pattern: '^[a-z0-9-]+$'
+        logoUrl:
+          type: string
+          format: uri
+    Brand:
+      allOf:
+        - type: object
+          properties:
+            id:
+              $ref: './shared-spec.yaml#/components/schemas/Id'
+        - $ref: '#/components/schemas/BrandBase'
+        - $ref: './shared-spec.yaml#/components/schemas/Timestamps'
+    BrandCreateRequest:
+      allOf:
+        - $ref: '#/components/schemas/BrandBase'
+        - type: object
+          required:
+            - name
+            - slug
+    BrandUpdateRequest:
+      $ref: '#/components/schemas/BrandBase'
+    BrandPage:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Brand'
+        page:
+          $ref: './shared-spec.yaml#/components/schemas/PageMeta'
+
+    ModelBase:
+      type: object
+      properties:
+        name:
+          type: string
+        brandId:
+          $ref: './shared-spec.yaml#/components/schemas/Id'
+        categoryId:
+          $ref: './shared-spec.yaml#/components/schemas/Id'
+        releaseYear:
+          type: integer
+          minimum: 1990
+    Model:
+      allOf:
+        - type: object
+          properties:
+            id:
+              $ref: './shared-spec.yaml#/components/schemas/Id'
+        - $ref: '#/components/schemas/ModelBase'
+        - $ref: './shared-spec.yaml#/components/schemas/Timestamps'
+    ModelCreateRequest:
+      allOf:
+        - $ref: '#/components/schemas/ModelBase'
+        - type: object
+          required:
+            - name
+            - brandId
+            - categoryId
+    ModelUpdateRequest:
+      $ref: '#/components/schemas/ModelBase'
+    ModelPage:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Model'
+        page:
+          $ref: './shared-spec.yaml#/components/schemas/PageMeta'

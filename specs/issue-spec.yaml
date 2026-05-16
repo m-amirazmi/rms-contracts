@@ -1,0 +1,136 @@
+openapi: 3.1.0
+info:
+  title: RMS Issue API
+  description: Predefined device issues (e.g. cracked screen, battery drain) attachable to repair requests.
+  version: 0.0.1
+servers:
+  - url: 'https://rms-devapi.merazmi.com/api/v1'
+    description: Version 1
+tags:
+  - name: Issue
+paths:
+  /issues:
+    get:
+      tags: [Issue]
+      operationId: list
+      summary: List issues
+      parameters:
+        - $ref: './shared-spec.yaml#/components/parameters/PageParam'
+        - $ref: './shared-spec.yaml#/components/parameters/SizeParam'
+        - $ref: './shared-spec.yaml#/components/parameters/SortParam'
+        - name: categoryId
+          in: query
+          required: false
+          schema:
+            $ref: './shared-spec.yaml#/components/schemas/Id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IssuePage'
+    post:
+      tags: [Issue]
+      operationId: create
+      summary: Create an issue
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IssueCreateRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Issue'
+        '400':
+          $ref: './shared-spec.yaml#/components/responses/BadRequest'
+  /issues/{id}:
+    parameters:
+      - $ref: './shared-spec.yaml#/components/parameters/IdPathParam'
+    get:
+      tags: [Issue]
+      operationId: get
+      summary: Get an issue by id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Issue'
+        '404':
+          $ref: './shared-spec.yaml#/components/responses/NotFound'
+    patch:
+      tags: [Issue]
+      operationId: update
+      summary: Update an issue
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IssueUpdateRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Issue'
+        '400':
+          $ref: './shared-spec.yaml#/components/responses/BadRequest'
+        '404':
+          $ref: './shared-spec.yaml#/components/responses/NotFound'
+    delete:
+      tags: [Issue]
+      operationId: delete
+      summary: Delete an issue
+      responses:
+        '204':
+          description: No Content
+        '404':
+          $ref: './shared-spec.yaml#/components/responses/NotFound'
+components:
+  schemas:
+    IssueBase:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        categoryId:
+          description: Optional — restricts this issue to a specific device category.
+          oneOf:
+            - $ref: './shared-spec.yaml#/components/schemas/Id'
+            - type: 'null'
+    Issue:
+      allOf:
+        - type: object
+          properties:
+            id:
+              $ref: './shared-spec.yaml#/components/schemas/Id'
+        - $ref: '#/components/schemas/IssueBase'
+        - $ref: './shared-spec.yaml#/components/schemas/Timestamps'
+    IssueCreateRequest:
+      allOf:
+        - $ref: '#/components/schemas/IssueBase'
+        - type: object
+          required:
+            - name
+    IssueUpdateRequest:
+      $ref: '#/components/schemas/IssueBase'
+    IssuePage:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Issue'
+        page:
+          $ref: './shared-spec.yaml#/components/schemas/PageMeta'

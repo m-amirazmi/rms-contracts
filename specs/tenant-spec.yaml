@@ -1,0 +1,149 @@
+openapi: 3.1.0
+info:
+  title: RMS Tenant API
+  description: Tenant (repair shop) onboarding and management.
+  version: 0.0.1
+servers:
+  - url: 'https://rms-devapi.merazmi.com/api/v1'
+    description: Version 1
+tags:
+  - name: Tenant
+paths:
+  /tenants:
+    get:
+      tags: [Tenant]
+      operationId: list
+      summary: List tenants
+      parameters:
+        - $ref: './shared-spec.yaml#/components/parameters/PageParam'
+        - $ref: './shared-spec.yaml#/components/parameters/SizeParam'
+        - $ref: './shared-spec.yaml#/components/parameters/SortParam'
+        - name: status
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/TenantStatus'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TenantPage'
+    post:
+      tags: [Tenant]
+      operationId: create
+      summary: Create a tenant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TenantCreateRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tenant'
+        '400':
+          $ref: './shared-spec.yaml#/components/responses/BadRequest'
+        '409':
+          $ref: './shared-spec.yaml#/components/responses/Conflict'
+  /tenants/{id}:
+    parameters:
+      - $ref: './shared-spec.yaml#/components/parameters/IdPathParam'
+    get:
+      tags: [Tenant]
+      operationId: get
+      summary: Get a tenant by id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tenant'
+        '404':
+          $ref: './shared-spec.yaml#/components/responses/NotFound'
+    patch:
+      tags: [Tenant]
+      operationId: update
+      summary: Update a tenant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TenantUpdateRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tenant'
+        '400':
+          $ref: './shared-spec.yaml#/components/responses/BadRequest'
+        '404':
+          $ref: './shared-spec.yaml#/components/responses/NotFound'
+    delete:
+      tags: [Tenant]
+      operationId: delete
+      summary: Delete a tenant
+      responses:
+        '204':
+          description: No Content
+        '404':
+          $ref: './shared-spec.yaml#/components/responses/NotFound'
+components:
+  schemas:
+    TenantStatus:
+      type: string
+      enum:
+        - ACTIVE
+        - SUSPENDED
+        - INACTIVE
+    TenantBase:
+      type: object
+      properties:
+        name:
+          type: string
+        slug:
+          type: string
+          pattern: '^[a-z0-9-]+$'
+        contactEmail:
+          type: string
+          format: email
+        phone:
+          type: string
+        status:
+          $ref: '#/components/schemas/TenantStatus'
+    Tenant:
+      allOf:
+        - type: object
+          properties:
+            id:
+              $ref: './shared-spec.yaml#/components/schemas/Id'
+        - $ref: '#/components/schemas/TenantBase'
+        - $ref: './shared-spec.yaml#/components/schemas/Timestamps'
+    TenantCreateRequest:
+      allOf:
+        - $ref: '#/components/schemas/TenantBase'
+        - type: object
+          required:
+            - name
+            - slug
+            - contactEmail
+    TenantUpdateRequest:
+      $ref: '#/components/schemas/TenantBase'
+    TenantPage:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tenant'
+        page:
+          $ref: './shared-spec.yaml#/components/schemas/PageMeta'
