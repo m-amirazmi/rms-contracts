@@ -15,19 +15,22 @@ tasks.register<GenerateTask>("generateTs") {
 
     configOptions.set(
         mapOf(
+            // ===== NPM PACKAGE =====
             "npmName" to "@rms/contracts",
             "npmVersion" to project.version.toString(),
 
-            // Core TS behavior
+            // ===== CORE STRIPE-STYLE SETTINGS =====
             "supportsES6" to "true",
             "stringEnums" to "true",
-            "enumPropertyNaming" to "original",
             "withSeparateModelsAndApi" to "true",
             "useSingleRequestParameter" to "true",
 
-            // clean structure
-            "apiPackage" to "api",
-            "modelPackage" to "model"
+            // ===== CLEAN OUTPUT =====
+            "modelPackage" to "models",
+            "apiPackage" to "apis",
+
+            // ===== IMPORTANT (MODERN TS MODE) =====
+            "typescriptThreePlus" to "true"
         )
     )
 }
