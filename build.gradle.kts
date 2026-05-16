@@ -6,12 +6,19 @@ plugins {
     id("org.openapi.generator") version "7.22.0" apply false
 }
 
-subprojects {
+/**
+ * Shared repository configuration
+ */
+allprojects {
     repositories {
         mavenCentral()
     }
+}
 
-    // Use Java 25 toolchain for all Java subprojects
+/**
+ * Apply Java toolchain ONLY to Java-based subprojects
+ */
+subprojects {
     plugins.withType(JavaPlugin::class.java) {
         extensions.configure(JavaPluginExtension::class.java) {
             toolchain {
@@ -21,17 +28,14 @@ subprojects {
     }
 }
 
-tasks.register("generateJava") {
-    group = "generation"
-    dependsOn(":modules:java-server:generateJava")
-}
-
-tasks.register("generateTs") {
-    group = "generation"
-    dependsOn(":modules:typescript-client:generateTs")
-}
-
+/**
+ * Root orchestration task
+ * Keeps contract generation centralized
+ */
 tasks.register("generateAll") {
     group = "generation"
-    dependsOn("generateJava", "generateTs")
+    dependsOn(
+        ":modules:typescript-client:generateTs"
+//        ":modules:spring-server:generateSpring"
+    )
 }

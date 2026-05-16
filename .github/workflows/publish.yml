@@ -1,25 +1,29 @@
-name: Generate and Publish Contracts
+name: Generate and Publish API Contracts
 
 on:
   push:
-    tags: [ 'v*' ]
+    tags:
+      - "v*"
 
 jobs:
   publish:
     runs-on: ubuntu-latest
+
     permissions:
       contents: read
       packages: write
+
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up JDK 25
+      # Only needed because Gradle generates TS SDK
+      - name: Set up Java (for OpenAPI Generator)
         uses: actions/setup-java@v4
         with:
+          distribution: temurin
           java-version: 25
-          distribution: 'temurin'
-          
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -29,8 +33,25 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
 
+      # 1. Generate TS SDK via OpenAPI
+      - name: Generate TypeScript SDK
+        run: ./gradlew :modules:typescript-client:generateTs
+
+      # 2. Install dependencies inside generated package
+      - name: Install dependencies
+        working-directory: modules/typescript-client/build/generated/ts-client
+        run: npm install
+
+      # 3. Set version from git tag
+      - name: Set package version
+        working-directory: modules/typescript-client/build/generated/ts-client
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          npm version $VERSION --no-git-tag-version
+
+      # 4. Publish directly with npm (NOT Gradle)
       - name: Publish to GitHub Packages
-        run: ./gradlew :modules:typescript-client:publishTs
+        working-directory: modules/typescript-client/build/generated/ts-client
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
