@@ -9,7 +9,7 @@ val genOutputDir = layout.buildDirectory.dir("generated/ts-client")
 tasks.register<GenerateTask>("generateTs") {
     group = "generation"
 
-    generatorName.set("typescript-axios")
+    generatorName.set("typescript-fetch")
     inputSpec.set("$rootDir/specs/api-spec.yaml")
     outputDir.set(genOutputDir.get().asFile.absolutePath)
 
