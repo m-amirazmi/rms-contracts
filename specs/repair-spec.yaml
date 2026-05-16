@@ -1,0 +1,34 @@
+openapi: 3.0.3
+info:
+  title: Repair Service API
+  version: 1.0.0
+paths:
+  /repairs:
+    post:
+      summary: Create a repair request
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Repair'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: './shared-spec.yaml#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    Repair:
+      type: object
+      allOf:
+        - $ref: './shared-spec.yaml#/components/schemas/AuditFields'
+        - type: object
+          properties:
+            id: { type: string, format: uuid }
+            description: { type: string }
+            location:
+              $ref: './shared-spec.yaml#/components/schemas/Address'

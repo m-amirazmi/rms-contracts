@@ -1,0 +1,27 @@
+openapi: 3.0.3
+info:
+  title: Shared Components
+  version: 1.0.0
+
+components:
+  schemas:
+    Address:
+      type: object
+      properties:
+        street: { type: string }
+        city: { type: string }
+        postalCode: { type: string }
+        
+    ErrorResponse:
+      type: object
+      properties:
+        code: { type: string }
+        message: { type: string }
+        timestamp: { type: string, format: date-time }
+
+    AuditFields:
+      type: object
+      properties:
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+        createdBy: { type: string }

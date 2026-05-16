@@ -1,0 +1,45 @@
+openapi: 3.0.3
+info:
+  title: RMS Contracts API
+  version: 1.0.0
+paths:
+  /tenants:
+    get:
+      summary: List tenants
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tenant'
+  /repairs:
+    post:
+      summary: Create a repair request
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Repair'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    Tenant:
+      $ref: './tenant-spec.yaml#/components/schemas/Tenant'
+    Repair:
+      $ref: './repair-spec.yaml#/components/schemas/Repair'
+    AuditFields:
+      $ref: './shared-spec.yaml#/components/schemas/AuditFields'
+    Address:
+      $ref: './shared-spec.yaml#/components/schemas/Address'
+    ErrorResponse:
+      $ref: './shared-spec.yaml#/components/schemas/ErrorResponse'
