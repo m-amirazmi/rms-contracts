@@ -2,6 +2,8 @@ name: Generate and Publish TS SDK
 
 on:
   push:
+    branches:
+      - main
     tags:
       - "v*"
 
@@ -43,24 +45,21 @@ jobs:
       # =========================
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
-#
-#      # =========================
-#      # Extract version from git tag
-#      # =========================
-#      - name: Set version
-#        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_ENV
 
       # =========================
-      # Generate TS SDK (ZERO BUILD OUTPUT)
+      # Generate TS SDK
       # =========================
       - name: Generate SDK
         run: ./gradlew :modules:typescript-client:generateTs
 
       # =========================
-      # Publish to GitHub Packages
+      # Build and Publish to GitHub Packages
       # =========================
-      - name: Publish SDK
-        working-directory: modules/typescript-client/build/generated/ts-client
-        run: npm publish
+      - name: Build and Publish SDK
+        working-directory: modules/typescript-client/build/generated
+        run: |
+          npm install
+          npm run build
+          npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
