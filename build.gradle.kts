@@ -30,3 +30,8 @@ tasks.register("generateTs") {
     group = "generation"
     dependsOn(":modules:typescript-client:generateTs")
 }
+
+tasks.register("generateAll") {
+    group = "generation"
+    dependsOn("generateJava", "generateTs")
+}

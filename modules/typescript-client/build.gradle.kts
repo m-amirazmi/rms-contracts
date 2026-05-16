@@ -6,7 +6,7 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("gen
     group = "generation"
     generatorName.set("typescript-axios")
     inputSpec.set("$rootDir/specs/api-spec.yaml")
-    outputDir.set("${layout.buildDirectory.get().asFile}/generated/all")
+    outputDir.set("${layout.buildDirectory.get().asFile}/generated")
     configOptions.set(mapOf(
         "npmName" to "@rms/contracts",
         "supportsES6" to "true",
@@ -31,8 +31,12 @@ tasks.register("publishTs") {
     dependsOn("generateTs")
     doLast {
         project.providers.exec {
-            workingDir("${layout.buildDirectory.get().asFile}/generated/")
+            workingDir("${layout.buildDirectory.get().asFile}/generated")
+            commandLine("npm", "install")
+        }.result.get()
+        project.providers.exec {
+            workingDir("${layout.buildDirectory.get().asFile}/generated")
             commandLine("npm", "publish")
-        }
+        }.result.get()
     }
 }
