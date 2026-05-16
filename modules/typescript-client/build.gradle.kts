@@ -24,6 +24,7 @@ tasks.register<GenerateTask>("generateTs") {
             "enumPropertyNaming" to "original",
             "withSeparateModelsAndApi" to "true",
             "useSingleRequestParameter" to "true",
+            "moduleResolution" to "bundler",
 
             // clean structure
             "apiPackage" to "api",
