@@ -33,23 +33,9 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
 
-      # 1. Generate TS SDK via OpenAPI
       - name: Generate TypeScript SDK
         run: ./gradlew :modules:typescript-client:generateTs
 
-      # 2. Install dependencies inside generated package
-      - name: Install dependencies
-        working-directory: modules/typescript-client/build/generated/ts-client
-        run: npm install
-
-      # 3. Set version from git tag
-      - name: Set package version
-        working-directory: modules/typescript-client/build/generated/ts-client
-        run: |
-          VERSION=${GITHUB_REF_NAME#v}
-          npm version $VERSION --no-git-tag-version
-
-      # 4. Publish directly with npm (NOT Gradle)
       - name: Publish to GitHub Packages
         working-directory: modules/typescript-client/build/generated/ts-client
         run: npm publish
