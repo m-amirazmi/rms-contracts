@@ -5,8 +5,8 @@ plugins {
     id("org.openapi.generator")
 }
 
-val npmScope = "@rms"
-val npmName = "contracts"
+val npmScope = "@m-amirazmi"
+val npmName = "rms/contracts"
 val npmVersion = project.version.toString()
 val npmDescription = "Repair Management System Contracts"
 
