@@ -1,4 +1,4 @@
-name: Generate and Publish API Contracts
+name: Publish API Contracts
 
 on:
   push:
@@ -14,29 +14,40 @@ jobs:
       packages: write
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      # Only needed because Gradle generates TS SDK
-      - name: Set up Java (for OpenAPI Generator)
-        uses: actions/setup-java@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 25
+          java-version: 21
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 22
           registry-url: https://npm.pkg.github.com
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+      - uses: gradle/actions/setup-gradle@v3
 
-      - name: Generate TypeScript SDK
+      # 1. Generate SDK
+      - name: Generate TS SDK
         run: ./gradlew :modules:typescript-client:generateTs
 
-      - name: Publish to GitHub Packages
+      # 2. Fix tsconfig (IMPORTANT)
+      - name: Patch TS config
+        run: |
+          node -e "
+          const fs = require('fs');
+          const p = 'modules/typescript-client/build/generated/ts-client/tsconfig.json';
+          const c = JSON.parse(fs.readFileSync(p));
+
+          c.compilerOptions.moduleResolution = 'bundler';
+          delete c.compilerOptions.outDir;
+
+          fs.writeFileSync(p, JSON.stringify(c, null, 2));
+          "
+
+      # 3. Publish raw SDK
+      - name: Publish
         working-directory: modules/typescript-client/build/generated/ts-client
         run: npm publish
         env:
