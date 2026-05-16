@@ -6,7 +6,7 @@ plugins {
 }
 
 val npmScope = "@m-amirazmi"
-val npmName = "rms/contracts"
+val npmName = "rms-api-client"
 val npmVersion = project.version.toString()
 val npmDescription = "Repair Management System Contracts"
 
