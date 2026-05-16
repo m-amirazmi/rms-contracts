@@ -13,7 +13,8 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("gen
         "npmVersion" to project.version.toString(),
         "apiPackage" to "api",
         "modelPackage" to "model",
-        "withSeparateModelsAndApi" to "true"
+        "withSeparateModelsAndApi" to "true",
+        "npmRepository" to "https://npm.pkg.github.com"
     ))
     doLast {
         // Add a default export to index.ts for the desired usage
